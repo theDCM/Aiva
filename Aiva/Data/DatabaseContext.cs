@@ -10,7 +10,6 @@ namespace Aiva.Data
         public DbSet<Kitchen> Kitchen { get; set; }
         public DbSet<Item> Items { get; set; }
         public DbSet<Order> Orders { get; set; }
-        public DbSet<ClientAddress> ClientAddresses { get; set; }
         public DbSet<Client> Clients { get; set; }
         public DbSet<Promocode> Promocodes { get; set; }
 

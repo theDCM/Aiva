@@ -35,7 +35,7 @@ namespace Aiva.Models
         /// <summary>
         /// Адрес доставки.
         /// </summary>
-        public ClientAddress Address { get; set; }
+        public string Address { get; set; }
 
         /// <summary>
         /// Промокод.
