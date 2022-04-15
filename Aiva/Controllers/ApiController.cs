@@ -37,6 +37,14 @@ namespace Aiva.Controllers
             return Content("<html><meta charset=\"utf-8\"><script>alert(\"Некорректные логин и(или) пароль\");document.location.href=\"/login\";</script></html>", "text/html");
         }
 
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await DoLogout();
+            return RedirectToAction("Index", "Home");
+        }
+
+
         [HttpPost("signup")]
         public async Task<IActionResult> SignUp(RegisterModel registerModel)
         {
@@ -99,10 +107,9 @@ namespace Aiva.Controllers
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
         }
 
-        public async Task<IActionResult> Logout()
+        public async Task DoLogout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login", "Account");
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Aiva.Data;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 
 namespace Aiva.Controllers
 {
@@ -25,6 +24,24 @@ namespace Aiva.Controllers
         public IActionResult SignUp()
         {
             return View();
+        }
+
+        [HttpGet("/cart")]
+        public IActionResult Cart()
+        {
+            if (base.User.Identity.IsAuthenticated)
+                return View();
+            else
+                return RedirectToAction("Login", "Account");
+        }
+
+        [HttpGet("/user")]
+        public IActionResult User()
+        {
+            if (base.User.Identity.IsAuthenticated)
+                return View();
+            else
+                return RedirectToAction("Login", "Account");
         }
     }
 }

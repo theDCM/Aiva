@@ -14,10 +14,5 @@
         /// Название.
         /// </summary>
         public string Name { get; set; }
-
-        /// <summary>
-        /// Название изображения.
-        /// </summary>
-        public string ImageName { get; set; }
     }
 }
