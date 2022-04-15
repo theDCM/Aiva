@@ -46,7 +46,7 @@ namespace Aiva.Controllers
                 Cook cook = await db.Cooks.FirstOrDefaultAsync(u => u.Login == registerModel.Login);
                 if (user is null && cook is null)
                 {
-                    if (registerModel.isCook)
+                    if (registerModel.Group1.Contains("Cook"))
                     {
                         await db.Cooks.AddAsync(
                             new Cook()
@@ -60,7 +60,7 @@ namespace Aiva.Controllers
                                 BirthdayDate = registerModel.BirthdayDate
                             });
                     }
-                    else if (registerModel.isClient)
+                    else if (registerModel.Group1.Contains("Client"))
                     {
                         await db.Clients.AddAsync(
                             new Client()
@@ -79,7 +79,10 @@ namespace Aiva.Controllers
                     return RedirectToAction("Index", "Home");
                 }
             }
-            return Content($"<html><meta charset=\"utf-8\"><script>alert(\"Ошибка при валидации модели:</br>{string.Join(",</br>", ModelState.Values.Where(x => x.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid).SelectMany(x => x.Errors.Select(x => x.ErrorMessage)))}\");document.location.href=\"/login\";</script></html>", "text/html");
+            var modelErrors = string.Join(", ", ModelState.Values.Where(x => x.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid).SelectMany(x => x.Errors.Select(x => x.ErrorMessage)));
+
+            //return Content("<html><meta charset=\"utf-8\"><script>alert(\"Некорректные логин и(или) пароль\");document.location.href=\"/login\";</script></html>", "text/html");
+            return Content("<html><meta charset='utf-8'><script>alert(\"Ошибка при валидации модели: "+ modelErrors + "\");document.location.href='/signup';</script></html>", "text/html");
         }
 
 

@@ -31,8 +31,16 @@
             </div>
         </div>
         <div class="btn-group-vertical d-flex justify-content-center align-items-center" role="group">
-            <a class="btn btn-secondary" role="button" href="login">Вход</a>
-            <a class="btn btn-secondary" role="button" href="signup">Регистрация</a>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a class="btn btn-secondary" role="button" href="user">Мой профиль</a>
+                <a class="btn btn-secondary" role="button" href="cart">Корзина</a>
+            }
+            else
+            {
+                <a class="btn btn-secondary" role="button" href="login">Вход</a>
+                <a class="btn btn-secondary" role="button" href="signup">Регистрация</a>
+            }
         </div>
     </header>
     <section>

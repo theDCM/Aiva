@@ -21,7 +21,6 @@ namespace Aiva.Models
         /// День рождения.
         /// </summary>
         [Required(ErrorMessage = "Не указана дата рождения")]
-        [DataType(DataType.Date)]
         public DateTime BirthdayDate { get; set; }
 
         /// <summary>
@@ -46,8 +45,7 @@ namespace Aiva.Models
 
         public string Kithcen { get; set; }
 
-        public bool isClient { get; set; }
-
-        public bool isCook { get; set; }
+        [Required(ErrorMessage = "Не указан тип (клиент/повар)")]
+        public string Group1 { get; set; }
     }
 }
