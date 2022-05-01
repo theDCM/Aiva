@@ -1,4 +1,15 @@
-﻿<!DOCTYPE html>
+﻿@{
+    string UserType()
+    {
+        if (ViewBag.IsUser)
+        {
+            return "Клиент";
+        }
+        return "Повар";
+    }
+}
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -18,12 +29,14 @@
 <body>
     <header class="header-dark" style="padding-bottom: 0;margin-bottom: 12px;">
         <nav class="navbar navbar-dark navbar-expand-lg d-flex justify-content-center align-items-center align-content-center mx-auto navigation-clean-search">
-            <div class="container"><a class="navbar-brand d-flex justify-content-center align-items-center align-content-center mx-auto" href="#">AIVA</a></div>
+            <div class="container"><a class="navbar-brand d-flex justify-content-center align-items-center align-content-center mx-auto" href="/">AIVA</a></div>
         </nav>
         <div class="container hero" style="margin-top: 0;padding: 1px;">
             <div class="row" style="margin-right: 0;margin-left: 0;">
                 <div class="col-md-8 offset-md-2">
-                    <h1 class="text-center" style="font-size: 38px;margin-bottom: 30px;">Анатолий Жмышенко</h1>
+                    <h1 class="text-center" style="font-size: 38px;margin-bottom: 30px;">
+                        @ViewBag.Data.FirstName @ViewBag.Data.LastName
+                    </h1>
                 </div>
             </div>
         </div>
@@ -33,23 +46,26 @@
         <div class="row">
             <div class="col-md-12">
                 <p style="margin: 20px;margin-bottom: 0px;">Идентификатор</p>
-                <p style="margin: 20px;margin-top: 0px;text-align: right;">82</p>
+                <p style="margin: 20px;margin-top: 0px;text-align: right;">@ViewBag.Data.Id</p>
             </div>
             <div class="col-md-12">
                 <p style="margin: 20px;margin-bottom: 0px;">Тип</p>
-                <p style="margin: 20px;margin-top: 0px;text-align: right;">Клиент/Повар</p>
+                <p style="margin: 20px;margin-top: 0px;text-align: right;">@UserType()</p>
             </div>
             <div class="col-md-12">
                 <p style="margin: 20px;margin-bottom: 0px;">Дата рождения</p>
-                <p style="margin: 20px;margin-top: 0px;text-align: right;">11.09.2007</p>
+                <p style="margin: 20px;margin-top: 0px;text-align: right;">@ViewBag.Data.BirthdayDate.ToShortDateString()</p>
             </div>
-            <div class="col-md-12">
-                <p style="margin: 20px;margin-bottom: 0px;">Тип кухни приготовления</p>
-                <p style="margin: 20px;margin-top: 0px;text-align: right;">Армянская</p>
-            </div>
+            @if (!ViewBag.IsUser)
+            {
+                <div class="col-md-12">
+                    <p style="margin: 20px;margin-bottom: 0px;">Тип кухни приготовления</p>
+                    <p style="margin: 20px;margin-top: 0px;text-align: right;">@ViewBag.Data.Kitchen.Name</p>
+                </div>
+            }
         </div>
     </div>
-    <form method="post"action="/api/logout">
+    <form method="post" action="/api/logout">
         <div class="container">
             <div class="row">
                 <div class="col-md-12"><button class="btn btn-warning active border rounded-pill d-flex mx-auto" type="submit" style="margin: 20px;">Выйти из аккаунта</button></div>

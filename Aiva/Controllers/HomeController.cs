@@ -1,11 +1,20 @@
 ﻿using Aiva.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Aiva.Controllers
 {
     [Route("/")]
     public class HomeController : Controller
     {
+        private DatabaseContext db;
+
+        public HomeController(DatabaseContext context)
+        {
+            db = context;
+        }
+
         [HttpGet("/")]
         public IActionResult Index([FromServices] DatabaseContext context)
         {
@@ -32,14 +41,35 @@ namespace Aiva.Controllers
             if (base.User.Identity.IsAuthenticated)
                 return View();
             else
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("Login", "Home");
         }
 
         [HttpGet("/user")]
         public IActionResult User()
         {
             if (base.User.Identity.IsAuthenticated)
+            {
+                var login = base.User.Identity.Name;
+
+                var user = db.Clients.FirstOrDefault(x => x.Login == login);
+                var cook = db.Cooks.Include(x => x.Kitchen).FirstOrDefault(x => x.Login == login);
+
+                if (user is null && cook is null)
+                    return RedirectToAction("Index", "Home");
+
+                if (user is not null)
+                {
+                    ViewBag.IsUser = true;
+                    ViewBag.Data = user;
+                }
+                else if (cook is not null)
+                {
+                    ViewBag.IsUser = false;
+                    ViewBag.Data = cook;
+                }
+
                 return View();
+            }
             else
                 return RedirectToAction("Login", "Account");
         }
