@@ -32,6 +32,7 @@ namespace Aiva.Controllers
         [HttpGet("/signup")]
         public IActionResult SignUp()
         {
+            ViewBag.Kitchens = db.Kitchen.ToList();
             return View();
         }
 

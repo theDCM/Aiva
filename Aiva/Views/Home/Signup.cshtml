@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>aiva</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Bitter:400,700">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -26,16 +27,65 @@
             <div class="mb-3">
                 <p style="color: var(--bs-gray);margin: 12px;margin-bottom: 0px;font-size: 12px;">Дата рождения:</p><input class="form-control" name="birthdaydate" type="date" style="color: var(--bs-gray);padding-top: 0;">
             </div>
-            <div class="mb-3"><input class="form-control" type="text" name="phone" placeholder="Номер телефона"></div>
-            <div class="mb-3"><input class="form-control" type="password" name="password" placeholder="Пароль"></div>
+            <div class="mb-3"><input style="color: var(--bs-gray-900);" class="form-control" type="text" name="phone" placeholder="Номер телефона"></div>
+            <div class="mb-3"><input style="color: var(--bs-gray-900);" class="form-control" type="password" name="password" placeholder="Пароль"></div>
             <div class="mb-3">
-                <div class="form-check" style="color: var(--bs-gray);"><input class="form-check-input" type="radio" id="formCheck-1" name="group1" value="isClient"><label class="form-check-label" for="formCheck-1">Клиент</label></div>
-                <div class="form-check" style="color: var(--bs-gray);"><input class="form-check-input" type="radio" id="formCheck-2" name="group1" value="isCook"><label class="form-check-label" for="formCheck-1">Повар</label></div>
+                <div class="form-check" style="color: var(--bs-gray);">
+                    <input class="form-check-input" type="radio" id="formCheck-1" name="group1" value="isClient" onclick="handleClickClient(this);">
+                    <label class="form-check-label" for="formCheck-1">Клиент</label>
+                </div>
+                <div class="form-check" style="color: var(--bs-gray);">
+                    <input class="form-check-input" type="radio" id="formCheck-2" name="group1" value="isCook" onclick="handleClick(this);">
+                    <label class="form-check-label" for="formCheck-1">Повар</label>
+                </div>
             </div>
-            <div class="mb-3"><button class="btn btn-primary d-block w-100" type="submit" style="background: var(--bs-teal);">Зарегистрироваться</button></div><a class="visually-hidden visible forgot" href="#">Forgot your email or password?</a>
-        </form><a class="navbar-brand d-flex justify-content-center align-items-center align-content-center mx-auto" style="padding-top: 27px;color: rgb(255,255,255);font-size: 60px;font-weight: bold;">AIVA</a>
+            <div class="mb-3" style="display: none" id="dropdownBlock">
+                <select class="form-select selectpicker" aria-label="Default select example">
+                    <option selected>Выберите тип кухни</option>
+                    @for (int i = 0; i < @ViewBag.Kitchens.Count; i++)
+                    {
+                        <option value="@ViewBag.Kitchens[i].Id">@ViewBag.Kitchens[i].Name</option>
+                    }
+                </select>
+            </div>
+            <input style="display: none" class="form-control" type="text" name="kitchen" id="kitchenInput">
+            <div class="mb-3"><button class="btn btn-primary d-block w-100" type="submit" style="background: var(--bs-teal);" onclick="return validateForm()">Зарегистрироваться</button></div>
+        </form>
+        <a class="navbar-brand d-flex justify-content-center align-items-center align-content-center mx-auto" style="padding-top: 27px;color: rgb(255,255,255);font-size: 60px;font-weight: bold;">AIVA</a>
     </section>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
+<script type="text/javascript">
+     
+    function validateForm() {
+         var iscookelem = document.getElementById('formCheck-2');
+         if(iscookelem.checked){
+            var dropdown = document.getElementById('kitchenInput');
+            if(dropdown.value=='')
+            {
+               alert('Не выбрана кухня!');
+               event.preventDefault();
+            }
+         }
+     }
+
+     $('.selectpicker').change(function () {
+        var selectedItem = $('.selectpicker').val();
+        var el = document.getElementById('kitchenInput');
+        $(el).val(selectedItem);
+    });
+
+     function handleClick(myRadio) {
+         var elem = document.getElementById('dropdownBlock');
+            $(elem).show();
+        };
+
+        function handleClickClient(myRadio) {
+            var elem = document.getElementById('dropdownBlock');
+            $(elem).hide();
+        };
+
+</script>
 
 </html>

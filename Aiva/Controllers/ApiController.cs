@@ -59,7 +59,7 @@ namespace Aiva.Controllers
                         await db.Cooks.AddAsync(
                             new Cook()
                             {
-                                Kitchen = await db.Kitchen.FirstAsync(x => x.Name == registerModel.Kithcen),
+                                Kitchen = await db.Kitchen.FirstAsync(x => x.Id == registerModel.Kitchen),
                                 Login = registerModel.Login,
                                 FirstName = registerModel.FirstName,
                                 LastName = registerModel.LastName,

@@ -43,7 +43,7 @@ namespace Aiva.Models
         [Required(ErrorMessage = "Не указан пароль")]
         public string Password { get; set; }
 
-        public string Kithcen { get; set; }
+        public int Kitchen { get; set; }
 
         [Required(ErrorMessage = "Не указан тип (клиент/повар)")]
         public string Group1 { get; set; }
