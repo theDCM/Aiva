@@ -19,6 +19,7 @@ namespace Aiva.Controllers
         public IActionResult Index([FromServices] DatabaseContext context)
         {
             ViewBag.Menu = context.Items;
+            ViewBag.IsAuthorized = base.User.Identity.IsAuthenticated;
 
             return View();
         }
