@@ -18,9 +18,19 @@ namespace Aiva.Models
         public Client Client { get; set; }
 
         /// <summary>
+        /// Повар, который принял заказ.
+        /// </summary>
+        public Cook Cook { get; set; }
+
+        /// <summary>
         /// Дата размещения заказа.
         /// </summary>
         public DateTime CreatedAt { get; set; }
+
+        /// <summary>
+        /// Статус заказа.
+        /// </summary>
+        public OrderState State { get; set; }
 
         /// <summary>
         /// Номер заказа.
