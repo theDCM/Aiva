@@ -1,6 +1,10 @@
 ﻿@page
 @model Aiva.Views.IndexModel
 @{
+    object AddToCart(int a)
+    {
+        return null;
+    }
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -77,9 +81,7 @@
                                 @if (ViewBag.IsAuthorized)
                                 {
                                     <div class="col" style="text-align: right;padding: 0;">
-                                        <a href="#" style="color: var(--bs-body-color);">
-                                            <i class="fa fa-cart-plus fs-1"></i>
-                                        </a>
+                                        <i style="color: var(--bs-body-color);" class="fa fa-cart-plus fs-1" onclick="send(@item.Id)"></i>
                                     </div>
                                 }
                             </div>
@@ -89,7 +91,33 @@
             </div>
         }
     </section>
+    <div class="position-fixed bottom-0 end-0 p-2" style="z-index: 11">
+        <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">AIVA</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Добавлено в корзину.
+            </div>
+        </div>
+    </div>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+    <script type="text/javascript">
+        var myToastEl = document.getElementById('liveToast')
+        var myToast = bootstrap.Toast.getOrCreateInstance(myToastEl)
 
+        function send(item) {
+            $.ajax({
+                url: '/api/addtocart',
+                type: 'post',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify(item)
+            });
+            myToast.show();
+        }
+    </script>
+</body>
 </html>

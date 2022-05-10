@@ -21,6 +21,72 @@ namespace Aiva.Controllers
             db = context;
         }
 
+        [HttpPost("addtocart")]
+        public async Task<IActionResult> AddToCart([FromBody] int itemId)
+        {
+            if (base.User.Identity.IsAuthenticated)
+            {
+                var login = base.User.Identity.Name;
+
+                var user = await db.Clients.FirstOrDefaultAsync(x => x.Login == login);
+
+                var item = await db.Items.FirstOrDefaultAsync(x => x.Id == itemId);
+
+                var cartItem = await db.CartItems.FirstOrDefaultAsync(x => x.Item == item && x.Client == user);
+
+                if (cartItem is null)
+                {
+                    await db.CartItems.AddAsync(new CartItem()
+                    {
+                        Client = user,
+                        Count = 1,
+                        Item = item
+                    });
+                }
+                else
+                {
+                    cartItem.Count += 1;
+                    db.CartItems.Update(cartItem);
+                }
+
+                await db.SaveChangesAsync();
+
+                return Ok();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        [HttpPost("deletefromcart")]
+        public async Task<IActionResult> deletefromcart([FromBody] int cartId)
+        {
+            if (base.User.Identity.IsAuthenticated)
+            {
+                var login = base.User.Identity.Name;
+
+                var cartItem = await db.CartItems.FirstOrDefaultAsync(x => x.Id == cartId);
+
+                if (cartItem is null)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    db.CartItems.Remove(cartItem);
+                }
+
+                await db.SaveChangesAsync();
+
+                return Ok();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
         [HttpPost("signin")]
         public async Task<IActionResult> SignIn(LoginModel loginModel)
         {
@@ -90,7 +156,7 @@ namespace Aiva.Controllers
             var modelErrors = string.Join(", ", ModelState.Values.Where(x => x.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid).SelectMany(x => x.Errors.Select(x => x.ErrorMessage)));
 
             //return Content("<html><meta charset=\"utf-8\"><script>alert(\"Некорректные логин и(или) пароль\");document.location.href=\"/login\";</script></html>", "text/html");
-            return Content("<html><meta charset='utf-8'><script>alert(\"Ошибка при валидации модели: "+ modelErrors + "\");document.location.href='/signup';</script></html>", "text/html");
+            return Content("<html><meta charset='utf-8'><script>alert(\"Ошибка при валидации модели: " + modelErrors + "\");document.location.href='/signup';</script></html>", "text/html");
         }
 
 

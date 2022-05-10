@@ -41,7 +41,20 @@ namespace Aiva.Controllers
         public IActionResult Cart()
         {
             if (base.User.Identity.IsAuthenticated)
+            {
+                var login = base.User.Identity.Name;
+                var items = db.CartItems.Include(x => x.Item).Include(x => x.Client).Where(x => x.Client.Login == login).ToList();
+                if (!items.Any())
+                {
+                    ViewBag.IsEmpty = true;
+                }
+                else
+                {
+                    ViewBag.IsEmpty = false;
+                }
+                ViewBag.Cart = items;
                 return View();
+            }
             else
                 return RedirectToAction("Login", "Home");
         }

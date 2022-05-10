@@ -23,39 +23,71 @@
         <div class="container hero" style="margin-top: 0;padding: 1px;">
             <div class="row">
                 <div class="col-md-8 offset-md-2">
-                    <h1 class="text-center" style="font-size: 38px;margin-bottom: 30px;">Корзина</h1>
+                    <h1 class="text-center" style="font-size: 38px;margin-bottom: 30px;">
+                        Корзина @if (ViewBag.IsEmpty)
+                        {
+                            <div>пуста</div>
+                        }
+                    </h1>
                 </div>
             </div>
         </div>
     </header>
     <div class="container">
-        <div class="row">
-            <div class="col-4">
-                <img class="img-fluid" src="assets/img/star-sky.jpg" style="margin-bottom: 12px;">
-                <p><button class="btn-close"></button>&nbsp;Удалить</p>
+        @for (var i = 0; i < ViewBag.Cart.Count; i++)
+        {
+            <div class="row" id="cartItem-@ViewBag.Cart[i].Id">
+                <div class="col-4">
+                    <img class="img-fluid" src="assets/img/products/@ViewBag.Cart[i].Item.ImageName" style="margin-bottom: 12px;">
+                    <p><button class="btn-close" onclick="send(@ViewBag.Cart[i].Id)"></button>&nbsp;Удалить</p>
+                </div>
+                <div class="col-8">
+                    <p class="lead" style="margin-bottom: 0;">@ViewBag.Cart[i].Item.Name</p>
+                    <p style="margin-bottom: 0;">Количество: @ViewBag.Cart[i].Count</p>
+                    <div class="btn-group d-flex justify-content-end" role="group">
+                        <button class="btn btn-secondary btn-sm" type="button">+</button>
+                        <button class="btn btn-secondary btn-sm" type="button">-</button>
+                    </div>
+                    <p class="fw-bold text-end">₽ @(ViewBag.Cart[i].Item.Price*ViewBag.Cart[i].Count)<br></p>
+                </div>
             </div>
-            <div class="col-8">
-                <p class="lead" style="margin-bottom: 0;">Том-ям амогус пеперобус</p>
-                <p style="margin-bottom: 0;">Количество: 11</p>
-                <div class="btn-group d-flex justify-content-end" role="group"><button class="btn btn-secondary btn-sm" type="button">+</button><button class="btn btn-secondary btn-sm" type="button">-</button></div>
-                <p class="fw-bold text-end">₽ 286.55<br></p>
+        }
+    </div>
+    @if (!ViewBag.IsEmpty)
+    {
+        <div class="container">
+            <div class="row">
+                <p style="text-align: center;margin-bottom: 0px;">Укажите адрес доставки:&nbsp;<input type="text" name="address" style="margin-bottom: 22px;"></p>
+            </div>
+            <div class="row">
+                <p style="text-align: center;margin-bottom: 0px;">Укажите промокод:&nbsp;<input type="text" name="promo" style="margin-bottom: 22px;"></p>
             </div>
         </div>
-    </div>
-    <div class="container">
-        <div class="row">
-            <p style="text-align: center;margin-bottom: 0px;">Укажите адрес доставки:&nbsp;<input type="text" name="address" style="margin-bottom: 22px;"></p>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12"><button class="btn btn-primary d-flex mx-auto" type="button">Заказать</button></div>
+            </div>
         </div>
-        <div class="row">
-            <p style="text-align: center;margin-bottom: 0px;">Укажите промокод:&nbsp;<input type="text" name="promo" style="margin-bottom: 22px;"></p>
-        </div>
-    </div>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12"><button class="btn btn-primary d-flex mx-auto" type="button">Заказать</button></div>
-        </div>
-    </div>
+    }
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript">
+        function send(item) {
+            $.ajax({
+                url: '/api/deletefromcart',
+                type: 'post',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify(item)
+            });
+            var a = 'cartItem-'+item;
+            element = document.getElementById(a);
+            element.style.display = 'none';
+            var dates = $('[id^="cartItem-"]');
+            if(dates.length==$('[id^="cartItem-"]:hidden').length)
+                window.location.replace("/");
+        }
+    </script>
 </body>
 
 </html>
