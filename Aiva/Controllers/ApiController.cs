@@ -24,7 +24,6 @@ namespace Aiva.Controllers
         [HttpPost("addtocart")]
         public async Task<IActionResult> AddToCart([FromBody] int itemId)
         {
-            //TODO: кнопки + -
             //TODO: только одна кухня в корзине
             //TODO: отображение заказа у повара
             //TODO: отображение состояния заказа у клиента

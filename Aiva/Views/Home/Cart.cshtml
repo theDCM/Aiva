@@ -23,7 +23,7 @@
         <div class="container hero" style="margin-top: 0;padding: 1px;">
             <div class="row">
                 <div class="col-md-8 offset-md-2">
-                    <h1 class="text-center" style="font-size: 38px;margin-bottom: 30px;">
+                    <h1 class="text-center" id="cart_header" style="font-size: 38px;margin-bottom: 30px;">
                         Корзина @if (ViewBag.IsEmpty)
                         {
                             <div>пуста</div>
@@ -55,15 +55,13 @@
     </div>
     @if (!ViewBag.IsEmpty)
     {
-        <div class="container">
+        <div class="container" id="fields">
             <div class="row">
                 <p style="text-align: center;margin-bottom: 0px;">Укажите адрес доставки:&nbsp;<input type="text" name="address" style="margin-bottom: 22px;"></p>
             </div>
             <div class="row">
                 <p style="text-align: center;margin-bottom: 0px;">Укажите промокод:&nbsp;<input type="text" name="promo" style="margin-bottom: 22px;"></p>
             </div>
-        </div>
-        <div class="container">
             <div class="row">
                 <div class="col-md-12"><button class="btn btn-primary d-flex mx-auto" type="button">Заказать</button></div>
             </div>
@@ -84,8 +82,10 @@
             element = document.getElementById(a);
             element.style.display = 'none';
             var dates = $('[id^="cartItem-"]');
-            if (dates.length == $('[id^="cartItem-"]:hidden').length)
-                window.location.replace("/");
+            if (dates.length == $('[id^="cartItem-"]:hidden').length) {
+                document.getElementById("cart_header").innerHTML = "Корзина пуста";
+                document.getElementById("fields").style.display = 'none';
+            }
         }
 
         function plus_one(item) {
@@ -102,16 +102,21 @@
         }
 
         function minus_one(item) {
-            $.ajax({
-                url: '/api/minus_one',
-                type: 'post',
-                dataType: 'json',
-                contentType: 'application/json',
-                data: JSON.stringify(item)
-            });
             var a = 'counter-' + item;
             element = document.getElementById(a);
-            element.innerHTML = parseInt(element.innerHTML) - 1;
+            if (parseInt(element.innerHTML) == 1) {
+                deletefromcart(item);
+            }
+            else {
+                $.ajax({
+                    url: '/api/minus_one',
+                    type: 'post',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify(item)
+                });
+                element.innerHTML = parseInt(element.innerHTML) - 1;
+            }
         }
     </script>
 </body>

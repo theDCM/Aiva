@@ -18,8 +18,27 @@ namespace Aiva.Controllers
         [HttpGet("/")]
         public IActionResult Index([FromServices] DatabaseContext context)
         {
-            ViewBag.Menu = context.Items.Include(x => x.Kitchen).ToList().GroupBy(x => x.Kitchen).ToList();
             ViewBag.IsAuthorized = base.User.Identity.IsAuthenticated;
+
+            if (base.User.Identity.IsAuthenticated)
+            {
+                var login = base.User.Identity.Name;
+                var items = db.CartItems.Include(x => x.Item).Include(x => x.Client).Include(x => x.Item.Kitchen).Where(x => x.Client.Login == login).ToList();
+                if (items.Any())
+                {
+                    var selectedKitchen = items[0].Item.Kitchen;
+                    ViewBag.Menu = context.Items.Include(x => x.Kitchen).ToList().Where(x => x.Kitchen.Id == selectedKitchen.Id).GroupBy(x => x.Kitchen).ToList();
+                }
+                else
+                {
+                    // корзине пусто
+                    ViewBag.Menu = context.Items.Include(x => x.Kitchen).ToList().GroupBy(x => x.Kitchen).ToList();
+                }
+            }
+            else
+            {
+                ViewBag.Menu = context.Items.Include(x => x.Kitchen).ToList().GroupBy(x => x.Kitchen).ToList();
+            }
 
             return View();
         }

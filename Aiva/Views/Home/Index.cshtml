@@ -53,20 +53,18 @@
             <div class="row">
                 <div class="col-md-12">
                     <p class="lead text-center" style="font-size: 36px;margin-bottom:0px;">Меню</p>
+                    <hr>
                 </div>
             </div>
         </div>
         @foreach (var kitchen in ViewBag.Menu)
         {
-            <hr>
-            <div class="container">
+            <div class="container kitchenblock-@kitchen.Key.Id">
                 <div class="row">
                     <div class="col-md-12">
                         <p class="lead text-start" style="font-size: 28px;">@kitchen.Key.Name</p>
                     </div>
                 </div>
-            </div>
-            <div class="container">
                 <div class="row">
                     @foreach (var item in kitchen)
                     {
@@ -81,17 +79,18 @@
                                 @if (ViewBag.IsAuthorized)
                                 {
                                     <div class="col" style="text-align: right;padding: 0;">
-                                        <i style="color: var(--bs-body-color);" class="fa fa-cart-plus fs-1" onclick="send(@item.Id)"></i>
+                                        <i style="color: var(--bs-body-color);" class="fa fa-cart-plus fs-1" onclick="addToCart(@item.Id, @kitchen.Key.Id)"></i>
                                     </div>
                                 }
                             </div>
                         </div>
                     }
                 </div>
+                <hr>
             </div>
         }
     </section>
-    <div class="position-fixed bottom-0 end-0 p-2" style="z-index: 11">
+    <div class="position-fixed bottom-0 start-50 translate-middle-x p-2" style="z-index: 11">
         <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
                 <strong class="me-auto">AIVA</strong>
@@ -107,8 +106,9 @@
     <script type="text/javascript">
         var myToastEl = document.getElementById('liveToast')
         var myToast = bootstrap.Toast.getOrCreateInstance(myToastEl)
+        var kitchenBlocks = document.querySelectorAll("[class*=kitchenblock]")
 
-        function send(item) {
+        function addToCart(item, kitchenId) {
             $.ajax({
                 url: '/api/addtocart',
                 type: 'post',
@@ -117,6 +117,9 @@
                 data: JSON.stringify(item)
             });
             myToast.show();
+            var blocksToHide = Array.from(document.querySelectorAll("[class*=kitchenblock]"))
+                .filter(x => x.className != ('container kitchenblock-' + kitchenId));
+            blocksToHide.forEach(element => element.style.display = 'none');
         }
     </script>
 </body>
