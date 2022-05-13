@@ -24,6 +24,10 @@ namespace Aiva.Controllers
         [HttpPost("addtocart")]
         public async Task<IActionResult> AddToCart([FromBody] int itemId)
         {
+            //TODO: кнопки + -
+            //TODO: только одна кухня в корзине
+            //TODO: отображение заказа у повара
+            //TODO: отображение состояния заказа у клиента
             if (base.User.Identity.IsAuthenticated)
             {
                 var login = base.User.Identity.Name;
@@ -46,6 +50,64 @@ namespace Aiva.Controllers
                 else
                 {
                     cartItem.Count += 1;
+                    db.CartItems.Update(cartItem);
+                }
+
+                await db.SaveChangesAsync();
+
+                return Ok();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        [HttpPost("plus_one")]
+        public async Task<IActionResult> plus_one([FromBody] int cartId)
+        {
+            if (base.User.Identity.IsAuthenticated)
+            {
+                var login = base.User.Identity.Name;
+
+                var cartItem = await db.CartItems.FirstOrDefaultAsync(x => x.Id == cartId);
+
+                if (cartItem is null)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    cartItem.Count++;
+                    db.CartItems.Update(cartItem);
+                }
+
+                await db.SaveChangesAsync();
+
+                return Ok();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        [HttpPost("minus_one")]
+        public async Task<IActionResult> minus_one([FromBody] int cartId)
+        {
+            if (base.User.Identity.IsAuthenticated)
+            {
+                var login = base.User.Identity.Name;
+
+                var cartItem = await db.CartItems.FirstOrDefaultAsync(x => x.Id == cartId);
+
+                if (cartItem is null)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    cartItem.Count--;
                     db.CartItems.Update(cartItem);
                 }
 
