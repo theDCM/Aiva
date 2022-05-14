@@ -11,7 +11,6 @@ namespace Aiva.Data
         public DbSet<Item> Items { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Client> Clients { get; set; }
-        public DbSet<Promocode> Promocodes { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

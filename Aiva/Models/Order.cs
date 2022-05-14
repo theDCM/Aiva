@@ -46,16 +46,5 @@ namespace Aiva.Models
         /// Адрес доставки.
         /// </summary>
         public string Address { get; set; }
-
-        /// <summary>
-        /// Промокод.
-        /// </summary>
-        public Promocode Promocode { get; set; }
-    }
-
-    public class OrderModel
-    {
-        public string promocode { get; set; }
-        public string address { get; set; }
     }
 }

@@ -25,19 +25,18 @@ namespace Aiva.Controllers
         }
 
         [HttpPost("create_order")]
-        public async Task<IActionResult> CreateOrder([FromBody] OrderModel orderModel)
+        public async Task<IActionResult> CreateOrder([FromBody] string address)
         {
             var client = db.Clients.First(x => x.Login == User.Identity.Name);
 
             db.Orders.Add(new Order()
             {
-                Address = orderModel.address,
+                Address = address,
                 Client = client,
                 CreatedAt = DateTime.Now,
                 Number = random.Next().ToString(),
                 State = OrderState.New,
-                Price = GetOrderPrice(client, orderModel.promocode),
-                Promocode = GetOrderPromocode()
+                Price = GetOrderPrice(client),
             });
 
             db.SaveChanges();
@@ -48,18 +47,10 @@ namespace Aiva.Controllers
         /// <summary>
         /// итоговая стоимость заказа
         /// </summary>
-        private decimal GetOrderPrice(Client client, string promocode)
+        private decimal GetOrderPrice(Client client)
         {
             var userCart = db.CartItems.Where(x => x.Client.Id == client.Id);
-            var sum = userCart.Sum(x => x.Item.Price * x.Count);
-            var promoDiscount = Convert.ToDecimal(db.Promocodes.FirstOrDefault(x => x.Code == promocode && x.IsActive)?.DiscountSum);
-            return sum - promoDiscount;
-        }
-
-        [HttpPost("validatePromocode")]
-        public async Task<IActionResult> ValidatePromocode([FromBody] string promocode)
-        {
-            return Ok(new { result = db.Promocodes.Any(x => x.IsActive && x.Code == promocode) });
+            return userCart.Sum(x => x.Item.Price * x.Count);
         }
 
         [HttpPost("addtocart")]

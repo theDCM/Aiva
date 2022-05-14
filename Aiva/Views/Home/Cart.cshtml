@@ -60,9 +60,6 @@
                 <p style="text-align: center;margin-bottom: 0px;">Укажите адрес доставки:&nbsp;<input type="text" id="address_input" name="address" style="margin-bottom: 22px;"></p>
             </div>
             <div class="row">
-                <p style="text-align: center;margin-bottom: 0px;">Укажите промокод:&nbsp;<input type="text" id="promocode_input" name="promo" style="margin-bottom: 22px;"></p>
-            </div>
-            <div class="row">
                 <div class="col-md-12"><button class="btn btn-primary d-flex mx-auto" type="button" onclick="new_order()">Оформить заказ</button></div>
             </div>
         </div>
@@ -121,11 +118,6 @@
 
         function new_order() {
             address = document.getElementById('address_input').value
-            promocode = document.getElementById('promocode_input').value
-            if (!(promocode === "") && !validatePromocode(promocode)) {
-                alert('Такого промокода не существует')
-                return
-            }
             if (address === "") {
                 alert('Укажите адрес')
                 return
@@ -133,27 +125,12 @@
             $.ajax({
                 type: 'POST',
                 url: '/api/create_order',
-                data: JSON.stringify({ address: address, promocode: promocode }),
+                data: JSON.stringify(address),
                 contentType: 'application/json',
                 async: false,
             });
             alert('Заказ оформлен, спасибо!')
             window.location.replace("/user");
-        }
-
-        function validatePromocode(promocode) {
-            res = false
-            $.ajax({
-                type: 'POST',
-                url: '/api/validatePromocode',
-                data: JSON.stringify(promocode),
-                contentType: 'application/json',
-                async: false,
-                success: function(d) {
-                    res = d.result;
-                }
-            });
-            return res;
         }
     </script>
 </body>
