@@ -52,4 +52,10 @@ namespace Aiva.Models
         /// </summary>
         public Promocode Promocode { get; set; }
     }
+
+    public class OrderModel
+    {
+        public string promocode { get; set; }
+        public string address { get; set; }
+    }
 }

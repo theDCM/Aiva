@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -15,21 +16,60 @@ namespace Aiva.Controllers
     public class ApiController : Controller
     {
         private DatabaseContext db;
+        private System.Random random;
 
         public ApiController(DatabaseContext context)
         {
             db = context;
+            random = new Random();
+        }
+
+        [HttpPost("create_order")]
+        public async Task<IActionResult> CreateOrder([FromBody] OrderModel orderModel)
+        {
+            var client = db.Clients.First(x => x.Login == User.Identity.Name);
+
+            db.Orders.Add(new Order()
+            {
+                Address = orderModel.address,
+                Client = client,
+                CreatedAt = DateTime.Now,
+                Number = random.Next().ToString(),
+                State = OrderState.New,
+                Price = GetOrderPrice(client, orderModel.promocode),
+                Promocode = GetOrderPromocode()
+            });
+
+            db.SaveChanges();
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// итоговая стоимость заказа
+        /// </summary>
+        private decimal GetOrderPrice(Client client, string promocode)
+        {
+            var userCart = db.CartItems.Where(x => x.Client.Id == client.Id);
+            var sum = userCart.Sum(x => x.Item.Price * x.Count);
+            var promoDiscount = Convert.ToDecimal(db.Promocodes.FirstOrDefault(x => x.Code == promocode && x.IsActive)?.DiscountSum);
+            return sum - promoDiscount;
+        }
+
+        [HttpPost("validatePromocode")]
+        public async Task<IActionResult> ValidatePromocode([FromBody] string promocode)
+        {
+            return Ok(new { result = db.Promocodes.Any(x => x.IsActive && x.Code == promocode) });
         }
 
         [HttpPost("addtocart")]
         public async Task<IActionResult> AddToCart([FromBody] int itemId)
         {
-            //TODO: только одна кухня в корзине
             //TODO: отображение заказа у повара
             //TODO: отображение состояния заказа у клиента
-            if (base.User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated)
             {
-                var login = base.User.Identity.Name;
+                var login = User.Identity.Name;
 
                 var user = await db.Clients.FirstOrDefaultAsync(x => x.Login == login);
 
@@ -65,9 +105,9 @@ namespace Aiva.Controllers
         [HttpPost("plus_one")]
         public async Task<IActionResult> plus_one([FromBody] int cartId)
         {
-            if (base.User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated)
             {
-                var login = base.User.Identity.Name;
+                var login = User.Identity.Name;
 
                 var cartItem = await db.CartItems.FirstOrDefaultAsync(x => x.Id == cartId);
 
