@@ -29,7 +29,7 @@ namespace Aiva.Controllers
         {
             var client = db.Clients.First(x => x.Login == User.Identity.Name);
 
-            db.Orders.Add(new Order()
+            var order = new Order()
             {
                 Address = address,
                 Client = client,
@@ -37,7 +37,23 @@ namespace Aiva.Controllers
                 Number = random.Next().ToString(),
                 State = OrderState.New,
                 Price = GetOrderPrice(client),
-            });
+            };
+
+            db.Orders.Add(order);
+
+            var cartItems = db.CartItems.Where(x => x.Client.Id == client.Id).Include(x => x.Item);
+
+            foreach (var cartItem in cartItems)
+            {
+                db.OrderItems.Add(new OrderItem()
+                {
+                    Count = cartItem.Count,
+                    Item = cartItem.Item,
+                    Order = order
+                });
+            }
+
+            db.CartItems.RemoveRange(cartItems);
 
             db.SaveChanges();
 

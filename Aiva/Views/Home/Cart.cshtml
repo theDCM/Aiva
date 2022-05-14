@@ -21,7 +21,7 @@
             <div class="container"><a class="navbar-brand d-flex justify-content-center align-items-center align-content-center mx-auto" href="/">AIVA</a></div>
         </nav>
         <div class="container hero" style="margin-top: 0;padding: 1px;">
-            <div class="row">
+            <div class="row" style="margin: 0;">
                 <div class="col-md-8 offset-md-2">
                     <h1 class="text-center" id="cart_header" style="font-size: 38px;margin-bottom: 30px;">
                         Корзина @if (ViewBag.IsEmpty)
@@ -45,10 +45,11 @@
                     <p class="lead" style="margin-bottom: 0;">@ViewBag.Cart[i].Item.Name</p>
                     <p style="margin-bottom: 0;">Количество: <div id="counter-@ViewBag.Cart[i].Id">@ViewBag.Cart[i].Count</div></p>
                     <div class="btn-group d-flex justify-content-end" role="group">
-                        <button class="btn btn-secondary btn-sm" type="button" onclick="plus_one(@ViewBag.Cart[i].Id)">+</button>
                         <button class="btn btn-secondary btn-sm" type="button" onclick="minus_one(@ViewBag.Cart[i].Id)">-</button>
+                        <button class="btn btn-secondary btn-sm" type="button" onclick="plus_one(@ViewBag.Cart[i].Id)">+</button>
                     </div>
-                    <p class="fw-bold text-end">₽ @(ViewBag.Cart[i].Item.Price*ViewBag.Cart[i].Count)<br></p>
+                    <p class="fw-bold text-end" id="itemprice-@ViewBag.Cart[i].Id">₽ @(ViewBag.Cart[i].Item.Price*ViewBag.Cart[i].Count)<br></p>
+                    <p id="singleitemprice-@ViewBag.Cart[i].Id" style="display: none;">@ViewBag.Cart[i].Item.Price</p>
                 </div>
             </div>
         }
@@ -96,6 +97,7 @@
             var a = 'counter-' + item;
             element = document.getElementById(a);
             element.innerHTML = parseInt(element.innerHTML) + 1;
+            update_price(item, element.innerHTML);
         }
 
         function minus_one(item) {
@@ -113,7 +115,19 @@
                     data: JSON.stringify(item)
                 });
                 element.innerHTML = parseInt(element.innerHTML) - 1;
+                update_price(item, element.innerHTML)
             }
+        }
+
+        function update_price(item, count) {
+            var a = 'singleitemprice-' + item;
+            element = document.getElementById(a);
+            var val = parseFloat(element.innerHTML.replace(',','.'));
+            var sum = val * parseInt(count);
+
+            var b = 'itemprice-' + item;
+            element = document.getElementById(b);
+            element.innerHTML = '₽ ' + sum.toFixed(2);
         }
 
         function new_order() {

@@ -65,6 +65,7 @@
             }
         </div>
     </div>
+    <hr>
     <form method="post" action="/api/logout">
         <div class="container">
             <div class="row">
@@ -72,6 +73,31 @@
             </div>
         </div>
     </form>
+    <hr>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1 class="display-6 text-center">Список заказов</h1>
+            </div>
+        </div>
+        @if (!ViewBag.HasOrders)
+        {
+            <p class="text-center" style="margin-bottom: 0px;font-weight: bold;">Заказов нет</p>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col" style="margin-top: 10px;margin-bottom: 10px;">
+                    <p class="text-center" style="margin-bottom: 0px;font-weight: bold;">Заказ #2022553058</p>
+                    <p style="margin-bottom: 0px;">От 2022-05-14 13:15:27.041181</p>
+                    <p style="margin-bottom: 0px;">Адрес доставки: ул Совхозная</p>
+                    <p style="margin-bottom: 0px;font-weight: bold;">Статус: Новый</p>
+                    <p style="margin-bottom: 0px;">Список товаров:</p>
+                    <p style="margin-bottom: 0px;">1. товар 1 (рублей стока)</p>
+                </div>
+            </div>
+        }
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

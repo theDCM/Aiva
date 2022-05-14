@@ -81,6 +81,7 @@ namespace Aiva.Controllers
         [HttpGet("/user")]
         public IActionResult User()
         {
+            ViewBag.HasOrders = false;
             if (base.User.Identity.IsAuthenticated)
             {
                 var login = base.User.Identity.Name;
