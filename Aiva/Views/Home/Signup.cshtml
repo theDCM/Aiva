@@ -57,34 +57,33 @@
 </body>
 
 <script type="text/javascript">
-     
-    function validateForm() {
-         var iscookelem = document.getElementById('formCheck-2');
-         if(iscookelem.checked){
-            var dropdown = document.getElementById('kitchenInput');
-            if(dropdown.value=='')
-            {
-               alert('Не выбрана кухня!');
-               event.preventDefault();
-            }
-         }
-     }
 
-     $('.selectpicker').change(function () {
+    function validateForm() {
+        var iscookelem = document.getElementById('formCheck-2');
+        if (iscookelem.checked) {
+            var dropdown = document.getElementById('kitchenInput');
+            if (dropdown.value == '') {
+                alert('Не выбрана кухня!');
+                event.preventDefault();
+            }
+        }
+    }
+
+    $('.selectpicker').change(function() {
         var selectedItem = $('.selectpicker').val();
         var el = document.getElementById('kitchenInput');
         $(el).val(selectedItem);
     });
 
-     function handleClick(myRadio) {
-         var elem = document.getElementById('dropdownBlock');
-            $(elem).show();
-        };
+    function handleClick(myRadio) {
+        var elem = document.getElementById('dropdownBlock');
+        $(elem).show();
+    };
 
-        function handleClickClient(myRadio) {
-            var elem = document.getElementById('dropdownBlock');
-            $(elem).hide();
-        };
+    function handleClickClient(myRadio) {
+        var elem = document.getElementById('dropdownBlock');
+        $(elem).hide();
+    };
 
 </script>
 

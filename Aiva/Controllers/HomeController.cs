@@ -1,4 +1,5 @@
 ﻿using Aiva.Data;
+using Aiva.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -81,7 +82,7 @@ namespace Aiva.Controllers
         [HttpGet("/user")]
         public IActionResult User()
         {
-            ViewBag.HasOrders = false;
+            ViewBag.HasOrders = true;
             if (base.User.Identity.IsAuthenticated)
             {
                 var login = base.User.Identity.Name;
@@ -94,6 +95,15 @@ namespace Aiva.Controllers
 
                 if (user is not null)
                 {
+                    var orders = db.OrderItems
+                        .Where(x => x.Order.Client.Id == user.Id)
+                        .Include(x => x.Order)
+                        .Include(x => x.Item)
+                        .Include(x => x.Order.Cook).ToList()
+                        .GroupBy(x => x.Order).ToList();
+
+                    ViewBag.Orders = orders;
+
                     ViewBag.IsUser = true;
                     ViewBag.Data = user;
                 }

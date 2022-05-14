@@ -28,6 +28,21 @@ namespace Aiva.Models
         public DateTime CreatedAt { get; set; }
 
         /// <summary>
+        /// Дата подтвержения заказа.
+        /// </summary>
+        public DateTime ConfirmedAt { get; set; }
+
+        /// <summary>
+        /// Дата принятия заказа в работу.
+        /// </summary>
+        public DateTime StartedAt { get; set; }
+
+        /// <summary>
+        /// Дата завершения заказа.
+        /// </summary>
+        public DateTime FinishedAt { get; set; }
+
+        /// <summary>
         /// Статус заказа.
         /// </summary>
         public OrderState State { get; set; }

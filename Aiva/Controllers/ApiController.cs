@@ -35,7 +35,7 @@ namespace Aiva.Controllers
                 Client = client,
                 CreatedAt = DateTime.Now,
                 Number = random.Next().ToString(),
-                State = OrderState.New,
+                State = OrderState.Created,
                 Price = GetOrderPrice(client),
             };
 
@@ -206,6 +206,16 @@ namespace Aiva.Controllers
                     await Authenticate(loginModel.Login); // аутентификация
 
                     return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    Cook cook = await db.Cooks.FirstOrDefaultAsync(x => x.Login == loginModel.Login);
+                    if (cook is not null)
+                    {
+                        await Authenticate(loginModel.Login); // аутентификация
+
+                        return RedirectToAction("Index", "Home");
+                    }
                 }
             }
             return Content("<html><meta charset=\"utf-8\"><script>alert(\"Некорректные логин и(или) пароль\");document.location.href=\"/login\";</script></html>", "text/html");

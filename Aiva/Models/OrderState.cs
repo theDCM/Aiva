@@ -8,21 +8,21 @@
         /// <summary>
         /// Создан.
         /// </summary>
-        New = 0,
+        Created = 0,
 
         /// <summary>
         /// Принят.
         /// </summary>
-        Accepted = 1,
+        Confirmed = 1,
 
         /// <summary>
         /// В работе.
         /// </summary>
-        InWork = 2,
+        Started = 2,
 
         /// <summary>
         /// Готов.
         /// </summary>
-        Done = 3
+        Finished = 3
     }
 }

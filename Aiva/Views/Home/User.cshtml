@@ -1,4 +1,7 @@
-﻿@{
+﻿@using System.Linq;
+@using Aiva.Models;
+@{
+
     string UserType()
     {
         if (ViewBag.IsUser)
@@ -65,7 +68,6 @@
             }
         </div>
     </div>
-    <hr>
     <form method="post" action="/api/logout">
         <div class="container">
             <div class="row">
@@ -86,16 +88,133 @@
         }
         else
         {
-            <div class="row">
-                <div class="col" style="margin-top: 10px;margin-bottom: 10px;">
-                    <p class="text-center" style="margin-bottom: 0px;font-weight: bold;">Заказ #2022553058</p>
-                    <p style="margin-bottom: 0px;">От 2022-05-14 13:15:27.041181</p>
-                    <p style="margin-bottom: 0px;">Адрес доставки: ул Совхозная</p>
-                    <p style="margin-bottom: 0px;font-weight: bold;">Статус: Новый</p>
-                    <p style="margin-bottom: 0px;">Список товаров:</p>
-                    <p style="margin-bottom: 0px;">1. товар 1 (рублей стока)</p>
+            @if (!ViewBag.IsUser)
+            {
+                <div class="row">
+                    <div class="col" style="margin-top: 10px;margin-bottom: 10px;">
+                        <p class="text-center" style="margin-bottom: 0px;font-weight: bold;">Заказ #2022553058</p>
+                        <p style="margin-bottom: 0px;">От 2022-05-14 13:15:27.041181</p>
+                        <p style="margin-bottom: 0px;">Адрес доставки: ул Совхозная</p>
+                        <p style="margin-bottom: 0px;font-weight: bold;">Статус: Новый</p>
+
+                        <button class="btn btn-info" type="button">Принять</button>
+                        <button class="btn btn-warning" type="button">В работу</button>
+                        <button class="btn btn-success" type="button">Готов</button>
+                        <p style="margin-bottom: 0px;">Список товаров:</p>
+                        <p style="margin-bottom: 0px;">1. товар 1 (рублей стока)</p>
+                        <p style="margin-bottom: 0px;font-weight: bold;">Итого: ₽ 288.05</p>
+                    </div>
+                    <hr>
                 </div>
-            </div>
+            }
+            else
+            {
+                <div class="alert alert-primary" role="alert">
+                    Новые заказы
+                </div>
+                @foreach (var order in ((List<IGrouping<Order, OrderItem>>)ViewBag.Orders).Where(x => x.Key.State == OrderState.Created))
+                {
+                    <div class="row">
+                        <div class="col" style="margin-top: 10px;margin-bottom: 10px;">
+                            <p class="text-center" style="margin-bottom: 16px;font-weight: bold;">Заказ #@order.Key.Number</p>
+                            <p style="margin-bottom: 0px;">От @order.Key.CreatedAt</p>
+                            <p style="margin-bottom: 0px;">Адрес доставки: @order.Key.Address</p>
+                            <p style="margin-bottom: 0px;">Список товаров:</p>
+                            <ul type="disc">
+                                @foreach (var orderItem in order)
+                                {
+                                    <li>
+                                        <p style="margin-bottom: 0px;">@orderItem.Item.Name x @orderItem.Count = ₽ @(orderItem.Item.Price*orderItem.Count)</p>
+                                    </li>
+                                }
+                            </ul>
+                            <p style="margin-bottom: 0px;font-weight: bold;">Итого: ₽ @order.Key.Price</p>
+                        </div>
+                        <hr>
+                    </div>
+                }
+                <div class="alert alert-info" role="alert">
+                    Подтверждённые заказы
+                </div>
+                @foreach (var order in ((List<IGrouping<Order, OrderItem>>)ViewBag.Orders).Where(x => x.Key.State == OrderState.Confirmed))
+                {
+                    <div class="row">
+                        <div class="col" style="margin-top: 10px;margin-bottom: 10px;">
+                            <p class="text-center" style="margin-bottom: 16px;font-weight: bold;">Заказ #@order.Key.Number</p>
+                            <p style="margin-bottom: 0px;">От @order.Key.CreatedAt</p>
+                            <p style="margin-bottom: 0px;">Принят @order.Key.ConfirmedAt</p>
+                            <p style="margin-bottom: 0px;">Повар @order.Key.Cook.FirstName @order.Key.Cook.LastName, @order.Key.Cook.Phone</p>
+                            <p style="margin-bottom: 0px;">Адрес доставки: @order.Key.Address</p>
+                            <p style="margin-bottom: 0px;">Список товаров:</p>
+                            <ul type="disc">
+                                @foreach (var orderItem in order)
+                                {
+                                    <li>
+                                        <p style="margin-bottom: 0px;">@orderItem.Item.Name x @orderItem.Count = ₽ @(orderItem.Item.Price*orderItem.Count)</p>
+                                    </li>
+                                }
+                            </ul>
+                            <p style="margin-bottom: 0px;font-weight: bold;">Итого: ₽ @order.Key.Price</p>
+                        </div>
+                        <hr>
+                    </div>
+                }
+                <div class="alert alert-warning" role="alert">
+                    Заказы в работе
+                </div>
+                @foreach (var order in ((List<IGrouping<Order, OrderItem>>)ViewBag.Orders).Where(x => x.Key.State == OrderState.Started))
+                {
+                    <div class="row">
+                        <div class="col" style="margin-top: 10px;margin-bottom: 10px;">
+                            <p class="text-center" style="margin-bottom: 16px;font-weight: bold;">Заказ #@order.Key.Number</p>
+                            <p style="margin-bottom: 0px;">От @order.Key.CreatedAt</p>
+                            <p style="margin-bottom: 0px;">Принят @order.Key.ConfirmedAt</p>
+                            <p style="margin-bottom: 0px;">Взят в работу @order.Key.StartedAt</p>
+                            <p style="margin-bottom: 0px;">Повар @order.Key.Cook.FirstName @order.Key.Cook.LastName, @order.Key.Cook.Phone</p>
+                            <p style="margin-bottom: 0px;">Адрес доставки: @order.Key.Address</p>
+                            <p style="margin-bottom: 0px;">Список товаров:</p>
+                            <ul type="disc">
+                                @foreach (var orderItem in order)
+                                {
+                                    <li>
+                                        <p style="margin-bottom: 0px;">@orderItem.Item.Name x @orderItem.Count = ₽ @(orderItem.Item.Price*orderItem.Count)</p>
+                                    </li>
+                                }
+                            </ul>
+                            <p style="margin-bottom: 0px;font-weight: bold;">Итого: ₽ @order.Key.Price</p>
+                        </div>
+                        <hr>
+                    </div>
+                }
+                <div class="alert alert-success" role="alert">
+                    Завершённые заказы
+                </div>
+                @foreach (var order in ((List<IGrouping<Order, OrderItem>>)ViewBag.Orders).Where(x => x.Key.State == OrderState.Finished))
+                {
+                    <div class="row">
+                        <div class="col" style="margin-top: 10px;margin-bottom: 10px;">
+                            <p class="text-center" style="margin-bottom: 16px;font-weight: bold;">Заказ #@order.Key.Number</p>
+                            <p style="margin-bottom: 0px;">От @order.Key.CreatedAt</p>
+                            <p style="margin-bottom: 0px;">Принят @order.Key.ConfirmedAt</p>
+                            <p style="margin-bottom: 0px;">Взят в работу @order.Key.StartedAt</p>
+                            <p style="margin-bottom: 0px;">Завершён @order.Key.FinishedAt</p>
+                            <p style="margin-bottom: 0px;">Повар @order.Key.Cook.FirstName @order.Key.Cook.LastName, @order.Key.Cook.Phone</p>
+                            <p style="margin-bottom: 0px;">Адрес доставки: @order.Key.Address</p>
+                            <p style="margin-bottom: 0px;">Список товаров:</p>
+                            <ul type="disc">
+                                @foreach (var orderItem in order)
+                                {
+                                    <li>
+                                        <p style="margin-bottom: 0px;">@orderItem.Item.Name x @orderItem.Count = ₽ @(orderItem.Item.Price*orderItem.Count)</p>
+                                    </li>
+                                }
+                            </ul>
+                            <p style="margin-bottom: 0px;font-weight: bold;">Итого: ₽ @order.Key.Price</p>
+                        </div>
+                        <hr>
+                    </div>
+                }
+            }
         }
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
