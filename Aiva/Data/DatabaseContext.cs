@@ -13,9 +13,21 @@ namespace Aiva.Data
         public DbSet<Client> Clients { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
 
+        public DatabaseContext()
+        {
+            Database.EnsureCreated();
+        }
+
+        public DatabaseContext(DbContextOptions<DatabaseContext> options)
+        : base(options)
+        {
+            Database.EnsureCreated();   // создаем базу данных при первом обращении
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("Host=localhost;Port=5433;Database=aiva;Username=postgres;Password=password");
+            optionsBuilder.UseNpgsql("Host=localhost;Port=5433;Database=aiva1;Username=postgres;Password=password");
         }
+
     }
 }
