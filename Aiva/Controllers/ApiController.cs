@@ -24,6 +24,35 @@ namespace Aiva.Controllers
             random = new Random();
         }
 
+        [HttpPost("upgrade_state")]
+        public async Task<IActionResult> UpgradeState([FromBody] int order_id)
+        {
+            var cook = db.Cooks.First(x => x.Login == User.Identity.Name);
+            var order = db.Orders.First(x => x.Id == order_id);
+
+            if (order.State == OrderState.Created)
+            {
+                order.Cook = cook;
+                order.ConfirmedAt = DateTime.Now;
+            }
+
+            if (order.State == OrderState.Confirmed)
+            {
+                order.StartedAt = DateTime.Now;
+            }
+
+            if (order.State == OrderState.Started)
+            {
+                order.FinishedAt = DateTime.Now;
+            }
+
+            order.State++;
+
+            db.Update(order);
+            db.SaveChanges();
+            return Ok();
+        }
+
         [HttpPost("create_order")]
         public async Task<IActionResult> CreateOrder([FromBody] string address)
         {

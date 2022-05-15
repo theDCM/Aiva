@@ -39,7 +39,10 @@
             @if (User.Identity.IsAuthenticated)
             {
                 <a class="btn btn-secondary" role="button" href="user">Мой профиль</a>
-                <a class="btn btn-secondary" role="button" href="cart">Корзина</a>
+                @if (!ViewBag.IsCook)
+                {
+                    <a class="btn btn-secondary" role="button" href="cart">Корзина</a>
+                }
             }
             else
             {
@@ -76,7 +79,7 @@
                                 <div class="col" style="margin: -1px;padding: 0;">
                                     <p class="d-flex my-auto" style="font-size: 30px;margin-bottom: 0;text-align: left;font-weight: bold;">₽@item.Price<br /></p>
                                 </div>
-                                @if (ViewBag.IsAuthorized)
+                                @if (ViewBag.IsAuthorized && !ViewBag.IsCook)
                                 {
                                     <div class="col" style="text-align: right;padding: 0;">
                                         <i style="color: var(--bs-body-color);" class="fa fa-cart-plus fs-1" onclick="addToCart(@item.Id, @kitchen.Key.Id)"></i>

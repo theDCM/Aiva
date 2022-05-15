@@ -1,5 +1,4 @@
 ﻿using Aiva.Data;
-using Aiva.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -24,6 +23,15 @@ namespace Aiva.Controllers
             if (base.User.Identity.IsAuthenticated)
             {
                 var login = base.User.Identity.Name;
+
+                var user = db.Clients.FirstOrDefault(x => x.Login == login);
+                var cook = db.Cooks.Include(x => x.Kitchen).FirstOrDefault(x => x.Login == login);
+
+                ViewBag.IsCook = false;
+
+                if (cook is not null)
+                    ViewBag.IsCook = true;
+
                 var items = db.CartItems.Include(x => x.Item).Include(x => x.Client).Include(x => x.Item.Kitchen).Where(x => x.Client.Login == login).ToList();
                 if (items.Any())
                 {
@@ -109,6 +117,15 @@ namespace Aiva.Controllers
                 }
                 else if (cook is not null)
                 {
+                    var orders = db.OrderItems
+                        .Where(x => (x.Order.Cook == null || x.Order.Cook.Id == cook.Id) && x.Item.Kitchen.Id == cook.Kitchen.Id)
+                        .Include(x => x.Order)
+                        .Include(x => x.Item)
+                        .Include(x => x.Order.Client)
+                        .Include(x => x.Order.Cook).ToList()
+                        .GroupBy(x => x.Order).ToList();
+
+                    ViewBag.Orders = orders;
                     ViewBag.IsUser = false;
                     ViewBag.Data = cook;
                 }
