@@ -269,10 +269,14 @@ namespace Aiva.Controllers
                 {
                     if (registerModel.Group1.Contains("Cook"))
                     {
+                        if (string.IsNullOrWhiteSpace(registerModel.Kitchen))
+                        {
+                            return Content("<html><meta charset='utf-8'><script>alert(\"Ошибка при валидации модели: для повара не указан тип кухни\");document.location.href='/signup';</script></html>", "text/html");
+                        }
                         await db.Cooks.AddAsync(
                             new Cook()
                             {
-                                Kitchen = await db.Kitchen.FirstAsync(x => x.Id == registerModel.Kitchen),
+                                Kitchen = await db.Kitchen.FirstAsync(x => x.Id == Convert.ToInt32(registerModel.Kitchen)),
                                 Login = registerModel.Login,
                                 FirstName = registerModel.FirstName,
                                 LastName = registerModel.LastName,

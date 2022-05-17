@@ -26,7 +26,7 @@ namespace Aiva.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("Host=localhost;Port=5433;Database=aiva1;Username=postgres;Password=password");
+            optionsBuilder.UseNpgsql("Host=localhost;Port=5433;Database=aiva;Username=postgres;Password=password");
         }
 
     }

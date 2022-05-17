@@ -1,10 +1,14 @@
-﻿using System;
+﻿using ExpressiveAnnotations.Attributes;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Aiva.Models
 {
     public class RegisterModel
     {
+        [Required(AllowEmptyStrings = true)]
+        public string Kitchen { get; set; }
+
         /// <summary>
         /// Имя.
         /// </summary>
@@ -42,8 +46,6 @@ namespace Aiva.Models
         [DataType(DataType.Password)]
         [Required(ErrorMessage = "Не указан пароль")]
         public string Password { get; set; }
-
-        public int Kitchen { get; set; }
 
         [Required(ErrorMessage = "Не указан тип (клиент/повар)")]
         public string Group1 { get; set; }
