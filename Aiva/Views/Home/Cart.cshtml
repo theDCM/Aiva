@@ -65,6 +65,28 @@
             </div>
         </div>
     }
+    <div class="position-fixed top-0 start-50 translate-middle-x p-2" style="z-index: 11">
+        <div id="liveToast1" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">AIVA</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Укажите ваш адрес.
+            </div>
+        </div>
+    </div>
+    <div class="position-fixed top-0 start-50 translate-middle-x p-2" style="z-index: 11">
+        <div id="liveToast2" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">AIVA</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Заказ оформлен, спасибо!
+            </div>
+        </div>
+    </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript">
@@ -130,10 +152,13 @@
             element.innerHTML = '₽ ' + sum.toFixed(2);
         }
 
+        var myToastEl1 = document.getElementById('liveToast1')
+        var myToast1 = bootstrap.Toast.getOrCreateInstance(myToastEl1)
+
         function new_order() {
             address = document.getElementById('address_input').value
             if (address === "") {
-                alert('Укажите адрес')
+                myToast1.show()
                 return
             }
             $.ajax({
@@ -143,7 +168,6 @@
                 contentType: 'application/json',
                 async: false,
             });
-            alert('Заказ оформлен, спасибо!')
             window.location.replace("/user");
         }
     </script>

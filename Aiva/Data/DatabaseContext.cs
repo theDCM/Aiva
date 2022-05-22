@@ -21,14 +21,7 @@ namespace Aiva.Data
         public DatabaseContext(DbContextOptions<DatabaseContext> options)
         : base(options)
         {
-            //Database.EnsureCreated();   // создаем базу данных при первом обращении
             Database.Migrate();
         }
-
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder.UseNpgsql();
-        //}
-
     }
 }

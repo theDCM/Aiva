@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Aiva.Controllers
 {
@@ -16,7 +17,7 @@ namespace Aiva.Controllers
         }
 
         [HttpGet("/")]
-        public IActionResult Index([FromServices] DatabaseContext context)
+        public async Task<IActionResult> Index([FromServices] DatabaseContext context)
         {
             ViewBag.IsAuthorized = base.User.Identity.IsAuthenticated;
 
@@ -24,8 +25,8 @@ namespace Aiva.Controllers
             {
                 var login = base.User.Identity.Name;
 
-                var user = db.Clients.FirstOrDefault(x => x.Login == login);
-                var cook = db.Cooks.Include(x => x.Kitchen).FirstOrDefault(x => x.Login == login);
+                var user = await db.Clients.FirstOrDefaultAsync(x => x.Login == login);
+                var cook = await db.Cooks.Include(x => x.Kitchen).FirstOrDefaultAsync(x => x.Login == login);
 
                 ViewBag.IsCook = false;
 
@@ -88,15 +89,15 @@ namespace Aiva.Controllers
         }
 
         [HttpGet("/user")]
-        public IActionResult User()
+        public async Task<IActionResult> User()
         {
             ViewBag.HasOrders = true;
             if (base.User.Identity.IsAuthenticated)
             {
                 var login = base.User.Identity.Name;
 
-                var user = db.Clients.FirstOrDefault(x => x.Login == login);
-                var cook = db.Cooks.Include(x => x.Kitchen).FirstOrDefault(x => x.Login == login);
+                var user = await db.Clients.FirstOrDefaultAsync(x => x.Login == login);
+                var cook = await db.Cooks.Include(x => x.Kitchen).FirstOrDefaultAsync(x => x.Login == login);
 
                 if (user is null && cook is null)
                     return RedirectToAction("Index", "Home");

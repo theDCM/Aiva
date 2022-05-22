@@ -27,8 +27,8 @@ namespace Aiva.Controllers
         [HttpPost("upgrade_state")]
         public async Task<IActionResult> UpgradeState([FromBody] int order_id)
         {
-            var cook = db.Cooks.First(x => x.Login == User.Identity.Name);
-            var order = db.Orders.First(x => x.Id == order_id);
+            var cook = await db.Cooks.FirstAsync(x => x.Login == User.Identity.Name);
+            var order = await db.Orders.FirstAsync(x => x.Id == order_id);
 
             if (order.State == OrderState.Created)
             {
@@ -49,14 +49,14 @@ namespace Aiva.Controllers
             order.State++;
 
             db.Update(order);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
             return Ok();
         }
 
         [HttpPost("create_order")]
         public async Task<IActionResult> CreateOrder([FromBody] string address)
         {
-            var client = db.Clients.First(x => x.Login == User.Identity.Name);
+            var client = await db.Clients.FirstAsync(x => x.Login == User.Identity.Name);
 
             var order = new Order()
             {
@@ -74,7 +74,7 @@ namespace Aiva.Controllers
 
             foreach (var cartItem in cartItems)
             {
-                db.OrderItems.Add(new OrderItem()
+                await db.OrderItems.AddAsync(new OrderItem()
                 {
                     Count = cartItem.Count,
                     Item = cartItem.Item,
@@ -84,7 +84,7 @@ namespace Aiva.Controllers
 
             db.CartItems.RemoveRange(cartItems);
 
-            db.SaveChanges();
+            await db.SaveChangesAsync();
 
             return Ok();
         }
@@ -298,7 +298,7 @@ namespace Aiva.Controllers
                                 BirthdayDate = registerModel.BirthdayDate,
                             });
                     }
-                    db.SaveChanges();
+                    await db.SaveChangesAsync();
                     await Authenticate(registerModel.Login); // аутентификация
 
                     return RedirectToAction("Index", "Home");

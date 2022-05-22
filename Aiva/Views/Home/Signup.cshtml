@@ -53,17 +53,30 @@
         </form>
         <a class="navbar-brand d-flex justify-content-center align-items-center align-content-center mx-auto" href="/" style="padding-top: 27px;color: rgb(255,255,255);font-size: 60px;font-weight: bold;">AIVA</a>
     </section>
+    <div class="position-fixed top-0 start-50 translate-middle-x p-2" style="z-index: 11">
+        <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">AIVA</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Необходимо выбрать кухню.
+            </div>
+        </div>
+    </div>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
 </body>
 
 <script type="text/javascript">
+    var myToastEl = document.getElementById('liveToast')
+    var myToast = bootstrap.Toast.getOrCreateInstance(myToastEl)
 
     function validateForm() {
         var iscookelem = document.getElementById('formCheck-2');
         if (iscookelem.checked) {
             var dropdown = document.getElementById('kitchenInput');
             if (dropdown.value == '') {
-                alert('Не выбрана кухня!');
+                myToast.show();
                 event.preventDefault();
             }
         }
