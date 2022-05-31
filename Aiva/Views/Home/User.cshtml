@@ -93,7 +93,7 @@
                 <div class="alert alert-primary" role="alert">
                     Новые заказы
                 </div>
-                @foreach (var order in ((List<IGrouping<Order, OrderItem>>)ViewBag.Orders).Where(x => x.Key.State == OrderState.Created && !x.Key.Cooks.Select(x=>x.Login).Contains(User.Identity.Name)))
+                @foreach (var order in ((List<IGrouping<Order, OrderItem>>)ViewBag.Orders).Where(x => x.Key.State == OrderState.Created))
                 {
                     <div class="row">
                         <div class="col" style="margin-top: 10px;margin-bottom: 10px;">
@@ -110,8 +110,30 @@
                                     </li>
                                 }
                             </ul>
+                            @if (order.Key.Cooks.Any())
+                            {
+                                <p style="margin-bottom: 0px;">Повара:</p>
+                                <ul type="disc">
+
+                                    @foreach (var cook in order.Key.Cooks)
+                                    {
+                                        <li>
+                                            <p style="margin-bottom: 0px;">@cook.FirstName @cook.LastName (@cook.Phone)</p>
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                            @if (order.Key.Cooks.Select(x => x.Login).Contains(User.Identity.Name))
+                            {
+                                <span class="badge bg-info text-dark">
+                                    Заказ ожидает подтверждения другого повара.
+                                </span>
+                            }
                             <p style="margin-bottom: 0px;font-weight: bold;">Итого: ₽ @order.Key.Price</p>
-                            <button class="btn btn-info" onclick="upgrade(@order.Key.Id)" type="button">Принять</button>
+                            @if (!order.Key.Cooks.Select(x => x.Login).Contains(User.Identity.Name))
+                            {
+                                <button class="btn btn-info" onclick="upgrade(@order.Key.Id)" type="button">Принять</button>
+                            }
                         </div>
                         <hr>
                     </div>
@@ -134,6 +156,16 @@
                                 {
                                     <li>
                                         <p style="margin-bottom: 0px;">@orderItem.Item.Name x @orderItem.Count = ₽ @(orderItem.Item.Price*orderItem.Count)</p>
+                                    </li>
+                                }
+                            </ul>
+                            <p style="margin-bottom: 0px;">Повара:</p>
+                            <ul type="disc">
+
+                                @foreach (var cook in order.Key.Cooks)
+                                {
+                                    <li>
+                                        <p style="margin-bottom: 0px;">@cook.FirstName @cook.LastName (@cook.Phone)</p>
                                     </li>
                                 }
                             </ul>
@@ -166,6 +198,16 @@
                                     </li>
                                 }
                             </ul>
+                            <p style="margin-bottom: 0px;">Повара:</p>
+                            <ul type="disc">
+
+                                @foreach (var cook in order.Key.Cooks)
+                                {
+                                    <li>
+                                        <p style="margin-bottom: 0px;">@cook.FirstName @cook.LastName (@cook.Phone)</p>
+                                    </li>
+                                }
+                            </ul>
                             <p style="margin-bottom: 0px;font-weight: bold;">Итого: ₽ @order.Key.Price</p>
                             <button class="btn btn-success" onclick="upgrade(@order.Key.Id)" type="button">Готов</button>
                         </div>
@@ -195,6 +237,16 @@
                                     </li>
                                 }
                             </ul>
+                            <p style="margin-bottom: 0px;">Повара:</p>
+                            <ul type="disc">
+
+                                @foreach (var cook in order.Key.Cooks)
+                                {
+                                    <li>
+                                        <p style="margin-bottom: 0px;">@cook.FirstName @cook.LastName (@cook.Phone)</p>
+                                    </li>
+                                }
+                            </ul>
                             <p style="margin-bottom: 0px;font-weight: bold;">Итого: ₽ @order.Key.Price</p>
                         </div>
                         <hr>
@@ -212,6 +264,18 @@
                         <div class="col" style="margin-top: 10px;margin-bottom: 10px;">
                             <p class="text-center" style="margin-bottom: 16px;font-weight: bold;">Заказ #@order.Key.Number</p>
                             <p style="margin-bottom: 0px;">От @order.Key.CreatedAt</p>
+                            @if (order.Key.Cooks.Any())
+                            {
+                                <p style="margin-bottom: 0px;">Повара:</p>
+                                <ul type="disc">
+                                    @foreach (var cook in order.Key.Cooks)
+                                    {
+                                        <li>
+                                            <p style="margin-bottom: 0px;">@cook.FirstName @cook.LastName (@cook.Phone)</p>
+                                        </li>
+                                    }
+                                </ul>
+                            }
                             <p style="margin-bottom: 0px;">Адрес доставки: @order.Key.Address</p>
                             <p style="margin-bottom: 0px;">Список товаров:</p>
                             <ul type="disc">
@@ -237,13 +301,16 @@
                             <p class="text-center" style="margin-bottom: 16px;font-weight: bold;">Заказ #@order.Key.Number</p>
                             <p style="margin-bottom: 0px;">От @order.Key.CreatedAt</p>
                             <p style="margin-bottom: 0px;">Принят @order.Key.ConfirmedAt</p>
-                            <p style="margin-bottom: 0px;">
-                                Повара:<br />
-                                @foreach (var cook in @order.Key.Cooks)
+                            <p style="margin-bottom: 0px;">Повара:</p>
+                            <ul type="disc">
+
+                                @foreach (var cook in order.Key.Cooks)
                                 {
-                                <p style="margin-bottom: 0px;">@cook.FirstName @cook.LastName (@cook.Phone)<br /></p>
+                                    <li>
+                                        <p style="margin-bottom: 0px;">@cook.FirstName @cook.LastName (@cook.Phone)</p>
+                                    </li>
                                 }
-                            </p>
+                            </ul>
                             <p style="margin-bottom: 0px;">Адрес доставки: @order.Key.Address</p>
                             <p style="margin-bottom: 0px;">Список товаров:</p>
                             <ul type="disc">
@@ -270,13 +337,16 @@
                             <p style="margin-bottom: 0px;">От @order.Key.CreatedAt</p>
                             <p style="margin-bottom: 0px;">Принят @order.Key.ConfirmedAt</p>
                             <p style="margin-bottom: 0px;">Взят в работу @order.Key.StartedAt</p>
-                            <p style="margin-bottom: 0px;">
-                                Повара:<br />
-                                @foreach (var cook in @order.Key.Cooks)
+                            <p style="margin-bottom: 0px;">Повара:</p>
+                            <ul type="disc">
+
+                                @foreach (var cook in order.Key.Cooks)
                                 {
-                                <p style="margin-bottom: 0px;">@cook.FirstName @cook.LastName (@cook.Phone)<br /></p>
+                                    <li>
+                                        <p style="margin-bottom: 0px;">@cook.FirstName @cook.LastName (@cook.Phone)</p>
+                                    </li>
                                 }
-                            </p>
+                            </ul>
                             <p style="margin-bottom: 0px;">Адрес доставки: @order.Key.Address</p>
                             <p style="margin-bottom: 0px;">Список товаров:</p>
                             <ul type="disc">
@@ -304,13 +374,16 @@
                             <p style="margin-bottom: 0px;">Принят @order.Key.ConfirmedAt</p>
                             <p style="margin-bottom: 0px;">Взят в работу @order.Key.StartedAt</p>
                             <p style="margin-bottom: 0px;">Завершён @order.Key.FinishedAt</p>
-                            <p style="margin-bottom: 0px;">
-                                Повара:<br />
-                                @foreach (var cook in @order.Key.Cooks)
+                            <p style="margin-bottom: 0px;">Повара:</p>
+                            <ul type="disc">
+
+                                @foreach (var cook in order.Key.Cooks)
                                 {
-                                <p style="margin-bottom: 0px;">@cook.FirstName @cook.LastName (@cook.Phone)<br /></p>
+                                    <li>
+                                        <p style="margin-bottom: 0px;">@cook.FirstName @cook.LastName (@cook.Phone)</p>
+                                    </li>
                                 }
-                            </p>
+                            </ul>
                             <p style="margin-bottom: 0px;">Адрес доставки: @order.Key.Address</p>
                             <p style="margin-bottom: 0px;">Список товаров:</p>
                             <ul type="disc">

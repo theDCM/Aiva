@@ -32,19 +32,19 @@ namespace Aiva.Controllers
 
             if (order.State == OrderState.Created)
             {
-                var orderCooks = db.Orders.First(x => x.Id == order_id).Cooks;
+                var orderCooks = db.Orders.Include(x => x.Cooks).First(x => x.Id == order_id).Cooks;
                 if (orderCooks == null)
                 {
                     orderCooks = new List<Cook>();
                 }
 
-                if (orderCooks?.Count < 2)
+                if (orderCooks.Count < 2)
                 {
-                    orderCooks.Add(cook);
+                    db.Orders.Include(x => x.Cooks).First(x => x.Id == order_id).Cooks.Add(cook);
                     await db.SaveChangesAsync();
                 }
 
-                orderCooks = db.Orders.First(x => x.Id == order_id).Cooks;
+                orderCooks = db.Orders.Include(x => x.Cooks).First(x => x.Id == order_id).Cooks;
 
                 if (orderCooks.Count == 2)
                 {

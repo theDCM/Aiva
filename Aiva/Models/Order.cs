@@ -61,6 +61,6 @@ namespace Aiva.Models
         /// <summary>
         /// Повара на заказе.
         /// </summary>
-        public ICollection<Cook> Cooks { get; set; }
+        public virtual ICollection<Cook> Cooks { get; set; }
     }
 }

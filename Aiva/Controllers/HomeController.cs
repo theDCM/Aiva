@@ -118,7 +118,8 @@ namespace Aiva.Controllers
                 else if (cook is not null)
                 {
                     var orders = db.OrderItems
-                        .Where(x => (x.Order.Cooks.Count() < 2 || x.Order.Cooks.Select(x => x.Id).Contains(cook.Id)) && x.Item.Kitchen.Id == cook.Kitchen.Id)
+                        .Where(x => (x.Order.Cooks.Count() < 2 || x.Order.Cooks.Select(x => x.Id).Contains(cook.Id))
+                                    && x.Item.Kitchen.Id == cook.Kitchen.Id)
                         .Include(x => x.Order)
                         .Include(x => x.Item)
                         .Include(x => x.Order.Client)

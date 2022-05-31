@@ -76,14 +76,19 @@
             </div>
         </div>
     </div>
-    <div class="position-fixed top-0 start-50 translate-middle-x p-2" style="z-index: 11">
-        <div id="liveToast2" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header">
-                <strong class="me-auto">AIVA</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body">
-                Заказ оформлен, спасибо!
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Заказ принят</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Большое спасибо, что воспользовались услугой кухни на выезд!<br/>Приятного аппетита :)<br/><div align="right" style="font-style: italic;">Команда поваров AIVA</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Спасибо!</button>
+                </div>
             </div>
         </div>
     </div>
@@ -144,7 +149,7 @@
         function update_price(item, count) {
             var a = 'singleitemprice-' + item;
             element = document.getElementById(a);
-            var val = parseFloat(element.innerHTML.replace(',','.'));
+            var val = parseFloat(element.innerHTML.replace(',', '.'));
             var sum = val * parseInt(count);
 
             var b = 'itemprice-' + item;
@@ -168,7 +173,12 @@
                 contentType: 'application/json',
                 async: false,
             });
-            window.location.replace("/user");
+            var myModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('staticBackdrop'))
+            var myModalEl = document.getElementById('staticBackdrop')
+            myModalEl.addEventListener('hide.bs.modal', function (event) {
+                window.location.replace("/user");
+            })
+            myModal.show()
         }
     </script>
 </body>
