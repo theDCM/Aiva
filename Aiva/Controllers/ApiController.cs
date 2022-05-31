@@ -32,8 +32,28 @@ namespace Aiva.Controllers
 
             if (order.State == OrderState.Created)
             {
-                order.Cook = cook;
-                order.ConfirmedAt = DateTime.Now;
+                var orderCooks = db.Orders.First(x => x.Id == order_id).Cooks;
+                if (orderCooks == null)
+                {
+                    orderCooks = new List<Cook>();
+                }
+
+                if (orderCooks?.Count < 2)
+                {
+                    orderCooks.Add(cook);
+                    await db.SaveChangesAsync();
+                }
+
+                orderCooks = db.Orders.First(x => x.Id == order_id).Cooks;
+
+                if (orderCooks.Count == 2)
+                {
+                    order.ConfirmedAt = DateTime.Now;
+                }
+                else
+                {
+                    return Ok();
+                }
             }
 
             if (order.State == OrderState.Confirmed)

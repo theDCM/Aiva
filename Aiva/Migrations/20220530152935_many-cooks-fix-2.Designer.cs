@@ -3,15 +3,17 @@ using System;
 using Aiva.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Aiva.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20220530152935_many-cooks-fix-2")]
+    partial class manycooksfix2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -194,6 +196,28 @@ namespace Aiva.Migrations
                     b.ToTable("Orders");
                 });
 
+            modelBuilder.Entity("Aiva.Models.OrderCook", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int?>("CookId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("OrderId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CookId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("OrderCooks");
+                });
+
             modelBuilder.Entity("Aiva.Models.OrderItem", b =>
                 {
                     b.Property<int>("Id")
@@ -274,6 +298,21 @@ namespace Aiva.Migrations
                         .HasForeignKey("ClientId");
 
                     b.Navigation("Client");
+                });
+
+            modelBuilder.Entity("Aiva.Models.OrderCook", b =>
+                {
+                    b.HasOne("Aiva.Models.Cook", "Cook")
+                        .WithMany()
+                        .HasForeignKey("CookId");
+
+                    b.HasOne("Aiva.Models.Order", "Order")
+                        .WithMany()
+                        .HasForeignKey("OrderId");
+
+                    b.Navigation("Cook");
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("Aiva.Models.OrderItem", b =>

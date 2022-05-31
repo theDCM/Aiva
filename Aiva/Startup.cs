@@ -29,7 +29,9 @@ namespace Aiva
             });
 
             services.AddDbContext<DatabaseContext>(options =>
-                options.UseNpgsql(Configuration.GetConnectionString("AivaDatabase")));
+            {
+                options.UseNpgsql(Configuration.GetConnectionString("AivaDatabase"));
+            });
 
             // установка конфигурации подключения
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

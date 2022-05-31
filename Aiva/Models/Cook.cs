@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Aiva.Models
 {
@@ -46,5 +47,10 @@ namespace Aiva.Models
         /// Пароль.
         /// </summary>
         public string Password { get; set; }
+
+        /// <summary>
+        /// Заказы повара.
+        /// </summary>
+        public ICollection<Order> Orders { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Aiva.Models
 {
@@ -16,11 +17,6 @@ namespace Aiva.Models
         /// Клиент.
         /// </summary>
         public Client Client { get; set; }
-
-        /// <summary>
-        /// Повар, который принял заказ.
-        /// </summary>
-        public Cook Cook { get; set; }
 
         /// <summary>
         /// Дата размещения заказа.
@@ -61,5 +57,10 @@ namespace Aiva.Models
         /// Адрес доставки.
         /// </summary>
         public string Address { get; set; }
+
+        /// <summary>
+        /// Повара на заказе.
+        /// </summary>
+        public ICollection<Cook> Cooks { get; set; }
     }
 }

@@ -108,22 +108,21 @@ namespace Aiva.Controllers
                         .Where(x => x.Order.Client.Id == user.Id)
                         .Include(x => x.Order)
                         .Include(x => x.Item)
-                        .Include(x => x.Order.Cook).ToList()
+                        .Include(x => x.Order.Cooks).ToList()
                         .GroupBy(x => x.Order).ToList();
 
                     ViewBag.Orders = orders;
-
                     ViewBag.IsUser = true;
                     ViewBag.Data = user;
                 }
                 else if (cook is not null)
                 {
                     var orders = db.OrderItems
-                        .Where(x => (x.Order.Cook == null || x.Order.Cook.Id == cook.Id) && x.Item.Kitchen.Id == cook.Kitchen.Id)
+                        .Where(x => (x.Order.Cooks.Count() < 2 || x.Order.Cooks.Select(x => x.Id).Contains(cook.Id)) && x.Item.Kitchen.Id == cook.Kitchen.Id)
                         .Include(x => x.Order)
                         .Include(x => x.Item)
                         .Include(x => x.Order.Client)
-                        .Include(x => x.Order.Cook).ToList()
+                        .Include(x => x.Order.Cooks).ToList()
                         .GroupBy(x => x.Order).ToList();
 
                     ViewBag.Orders = orders;
