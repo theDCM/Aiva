@@ -16,7 +16,7 @@ namespace Aiva.Controllers
     public class ApiController : Controller
     {
         private DatabaseContext db;
-        private System.Random random;
+        private Random random;
 
         public ApiController(DatabaseContext context)
         {
@@ -121,8 +121,6 @@ namespace Aiva.Controllers
         [HttpPost("addtocart")]
         public async Task<IActionResult> AddToCart([FromBody] int itemId)
         {
-            //TODO: отображение заказа у повара
-            //TODO: отображение состояния заказа у клиента
             if (User.Identity.IsAuthenticated)
             {
                 var login = User.Identity.Name;
@@ -326,7 +324,6 @@ namespace Aiva.Controllers
             }
             var modelErrors = string.Join(", ", ModelState.Values.Where(x => x.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid).SelectMany(x => x.Errors.Select(x => x.ErrorMessage)));
 
-            //return Content("<html><meta charset=\"utf-8\"><script>alert(\"Некорректные логин и(или) пароль\");document.location.href=\"/login\";</script></html>", "text/html");
             return Content("<html><meta charset='utf-8'><script>alert(\"Ошибка при валидации модели: " + modelErrors + "\");document.location.href='/signup';</script></html>", "text/html");
         }
 

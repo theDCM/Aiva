@@ -41,7 +41,6 @@ namespace Aiva.Controllers
                 }
                 else
                 {
-                    // корзине пусто
                     ViewBag.Menu = context.Items.Include(x => x.Kitchen).ToList().GroupBy(x => x.Kitchen).ToList();
                 }
             }
